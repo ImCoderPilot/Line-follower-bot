@@ -1,0 +1,79 @@
+// Motor Pins
+#define LEFT_MOTOR_FORWARD 3
+#define LEFT_MOTOR_BACKWARD 4
+#define RIGHT_MOTOR_FORWARD 5
+#define RIGHT_MOTOR_BACKWARD 6
+// IR Sensor Pins
+#define LEFT_IR_SENSOR A0
+#define RIGHT_IR_SENSOR A1
+// Motor speed
+#define MOTOR_SPEED 75 // Reduced speed to 75 (0-255)
+// Sensor threshold (adjust based on your setup)
+#define SENSOR_THRESHOLD 500 // Adjust according to your line and surface
+conditions
+void setup() {
+ // Set motor pins as outputs
+ pinMode(LEFT_MOTOR_FORWARD, OUTPUT);
+ pinMode(LEFT_MOTOR_BACKWARD, OUTPUT);
+ pinMode(RIGHT_MOTOR_FORWARD, OUTPUT);
+ pinMode(RIGHT_MOTOR_BACKWARD, OUTPUT);
+// Set sensor pins as inputs
+ pinMode(LEFT_IR_SENSOR, INPUT);
+ pinMode(RIGHT_IR_SENSOR, INPUT);
+}
+void loop() {
+ // Read the IR sensors
+ int leftSensorValue = analogRead(LEFT_IR_SENSOR);
+ int rightSensorValue = analogRead(RIGHT_IR_SENSOR);
+ // Print sensor values for debugging (optional)
+ // Serial.begin(9600);
+ // Serial.print("Left: ");
+ // Serial.print(leftSensorValue);
+ // Serial.print(" Right: ");
+ // Serial.println(rightSensorValue); 
+ // Check if the sensors detect the line
+ if (leftSensorValue < SENSOR_THRESHOLD && rightSensorValue <
+SENSOR_THRESHOLD) {
+ // Both sensors detect the line, move forward
+ moveForward();
+ } else if (leftSensorValue < SENSOR_THRESHOLD) {
+ // Left sensor detects the line, turn right
+ turnRight();
+ } else if (rightSensorValue < SENSOR_THRESHOLD) {
+ // Right sensor detects the line, turn left
+ turnLeft();
+ } else {
+ // No sensor detects the line, stop or move forward slowly
+ stopMotors();
+ }
+}
+void moveForward() {
+ // Move both motors forward at reduced speed
+ analogWrite(LEFT_MOTOR_FORWARD, MOTOR_SPEED);
+ analogWrite(RIGHT_MOTOR_FORWARD, MOTOR_SPEED);
+ analogWrite(LEFT_MOTOR_BACKWARD, 0);
+ analogWrite(RIGHT_MOTOR_BACKWARD, 0);
+}
+void turnRight() {
+ // Turn right by stopping the left motor and moving the right motor forward at
+reduced speed
+ analogWrite(LEFT_MOTOR_FORWARD, 0);
+ analogWrite(RIGHT_MOTOR_FORWARD, MOTOR_SPEED);
+ analogWrite(LEFT_MOTOR_BACKWARD, 0);
+ analogWrite(RIGHT_MOTOR_BACKWARD, 0);
+}
+void turnLeft() {
+ // Turn left by stopping the right motor and moving the left motor forward at reduced
+speed
+ analogWrite(LEFT_MOTOR_FORWARD, MOTOR_SPEED);
+ analogWrite(RIGHT_MOTOR_FORWARD, 0); 
+ analogWrite(LEFT_MOTOR_BACKWARD, 0);
+ analogWrite(RIGHT_MOTOR_BACKWARD, 0);
+}
+void stopMotors() {
+ // Stop both motors
+ analogWrite(LEFT_MOTOR_FORWARD, 0);
+ analogWrite(RIGHT_MOTOR_FORWARD, 0);
+ analogWrite(LEFT_MOTOR_BACKWARD, 0);
+ analogWrite(RIGHT_MOTOR_BACKWARD, 0);
+}
